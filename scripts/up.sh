@@ -20,6 +20,27 @@ cd $(dirname ${BASH_SOURCE})
 
 set -e
 
+detect_platform() {
+  local arch="$(uname -m)"
+
+  case "${arch}" in
+    x86_64|amd64)   arch="amd64" ;;
+    aarch64|arm64)  arch="arm64" ;;
+    armv7l|armv8l|armv6l) arch="arm" ;;
+    ppc64le) arch="ppc64le" ;;
+    s390x)   arch="s390x" ;;
+    mips64le) arch="mips64le" ;;
+    mips)     arch="mips" ;;
+    riscv64)  arch="riscv64" ;;
+    *)
+      echo "Unsupported ARCH: ${arch}"
+      exit 1
+      ;;
+  esac
+
+  echo "linux_${arch}"
+}
+
 kind() {
   go run sigs.k8s.io/kind "$@"
 }
@@ -44,8 +65,15 @@ coredns_image="multicluster/coredns:latest"
 coredns_path="/tmp/coredns-${coredns_version}"
 if [ ! -d "${coredns_path}" ]; then
   pushd /tmp
-  curl -fLO "https://github.com/coredns/coredns/archive/refs/tags/v${coredns_version}.tar.gz"
-  tar xf v${coredns_version}.tar.gz
+  # Since the coredns make command uses the git command, we clone it with git
+  git clone --depth 1 https://github.com/coredns/coredns.git --branch v${coredns_version} --single-branch "${coredns_path}"
+
+  # coredns binary is not multi-arch, so we need to download the binary for the current platform
+  platform="$(detect_platform)"
+  coredns_binary_url="https://github.com/coredns/coredns/releases/download/v${coredns_version}/coredns_${coredns_version}_${platform}.tgz"
+  curl -fLO "${coredns_binary_url}"
+  tar xzf "coredns_${coredns_version}_${platform}.tgz"
+  chmod +x coredns
   popd
 fi
 pushd "${coredns_path}"
@@ -53,6 +81,7 @@ if ! grep -q -F 'multicluster:github.com/coredns/multicluster' "plugin.cfg"; the
   sed -i -e 's/^kubernetes:kubernetes$/&\nmulticluster:github.com\/coredns\/multicluster/' "plugin.cfg"
 fi
 make
+cp ../coredns ./coredns
 docker build -t "${coredns_image}" .
 popd
 
