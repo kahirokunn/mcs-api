@@ -15,7 +15,8 @@
 # limitations under the License.
 
 # Resolve the absolute path to this script directory.
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd $(dirname "${BASH_SOURCE[0]}")
+script_dir="$(pwd)"
 
 # Source the helper scripts with absolute paths.
 . "${script_dir}/udemo.sh"
