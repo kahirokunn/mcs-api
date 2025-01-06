@@ -18,13 +18,11 @@
 cd $(dirname "${BASH_SOURCE[0]}")
 script_dir="$(pwd)"
 
-# Source the helper scripts with absolute paths.
 . "${script_dir}/udemo.sh"
 . "${script_dir}/../scripts/util.sh"
 
 DEMO_AUTO_RUN=true
 
-# Use absolute paths for kubeconfig defaults.
 kubeconfig1="${KUBECONFIG1:-$(realpath "${script_dir}/../scripts/c1.kubeconfig")}"
 kubeconfig2="${KUBECONFIG2:-$(realpath "${script_dir}/../scripts/c2.kubeconfig")}"
 
