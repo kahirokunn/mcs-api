@@ -1,5 +1,7 @@
 # Multi-cluster Service APIs
 
+test
+
 This repository hosts the Multi-Cluster Service APIs. Providers can import packages in this repo to ensure their multi-cluster service controller implementations will be compatible with MCS data planes.
 
 This repo contains the initial implementation according to [KEP-1645][kep] and will
