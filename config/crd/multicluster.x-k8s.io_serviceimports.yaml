@@ -20,7 +20,7 @@ metadata:
     # The revision is updated on each CRD change and reset back to 0 on every new version.
     # It can be used together with the version label when installing those CRDs
     # and prevent any downgrades.
-    multicluster.x-k8s.io/crd-schema-revision: "1"
+    multicluster.x-k8s.io/crd-schema-revision: "2"
 spec:
   group: multicluster.x-k8s.io
   scope: Namespaced
@@ -200,14 +200,16 @@ spec:
                     was derived.
                   type: array
                   items:
-                    description: ClusterStatus contains service configuration mapped to a specific source cluster
+                    description: |-
+                      ClusterStatus identifies a cluster associated with a service export or import.
+                      ServiceExport lists destination clusters; ServiceImport lists source clusters.
                     type: object
                     required:
                       - cluster
                     properties:
                       cluster:
                         description: |-
-                          cluster is the name of the exporting cluster. Must be a valid RFC-1123 DNS
+                          cluster is the name of the cluster. Must be a valid RFC-1123 DNS
                           label.
                         type: string
                   x-kubernetes-list-map-keys:
@@ -445,14 +447,16 @@ spec:
                     was derived.
                   type: array
                   items:
-                    description: ClusterStatus contains service configuration mapped to a specific source cluster
+                    description: |-
+                      ClusterStatus identifies a cluster associated with a service export or import.
+                      ServiceExport lists destination clusters; ServiceImport lists source clusters.
                     type: object
                     required:
                       - cluster
                     properties:
                       cluster:
                         description: |-
-                          cluster is the name of the exporting cluster. Must be a valid RFC-1123 DNS
+                          cluster is the name of the cluster. Must be a valid RFC-1123 DNS
                           label.
                         type: string
                   x-kubernetes-list-map-keys:

@@ -20,6 +20,43 @@ a pair of kind clusters. Alternatively, you can take a self guided tour. Use:
   clusters (must run `./scripts/up.sh` first).
 - `./scripts/down.sh` to tear down your clusters.
 
+## Inspect service publication destinations
+
+If you operate an exporting cluster, use `ServiceExport.status.clusters` to see
+which clusters your service information is made available to. The MCS
+implementation populates this status. For example, inspect `payments/api` on
+`cluster-a`:
+
+```sh
+kubectl --context cluster-a -n payments get serviceexport api -o yaml
+```
+
+An implementation that reports destinations might return the following fields:
+
+```yaml
+apiVersion: multicluster.x-k8s.io/v1beta1
+kind: ServiceExport
+metadata:
+  name: api
+  namespace: payments
+status:
+  clusters:
+    - cluster: cluster-b
+    - cluster: cluster-c
+```
+
+Here, `cluster-a` makes the service information available for `cluster-b` and
+`cluster-c` to discover and import. `cluster-b` remains listed even if it has no
+`payments` namespace or ignores or rejects the export. The exporting
+implementation does not need to inspect remote namespaces or import state to
+report these destinations.
+
+Destination reporting is optional. An absent or empty list does not imply that
+the service has no destinations. For the field definition, see
+[`ServiceExportStatus`](pkg/apis/v1beta1/serviceexport.go). To inspect the source
+clusters contributing to an imported service instead, use
+[`ServiceImport.status.clusters`](pkg/apis/v1beta1/serviceimport.go).
+
 ## Community, discussion, contribution, and support
 
 Learn how to engage with the Kubernetes community on the [community page](http://kubernetes.io/community/).

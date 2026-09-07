@@ -20,7 +20,7 @@ metadata:
     # The revision is updated on each CRD change and reset back to 0 on every new version.
     # It can be used together with the version label when installing those CRDs
     # and prevent any downgrades.
-    multicluster.x-k8s.io/crd-schema-revision: "1"
+    multicluster.x-k8s.io/crd-schema-revision: "2"
 spec:
   group: multicluster.x-k8s.io
   scope: Namespaced
@@ -89,6 +89,33 @@ spec:
                 Populated by the multi-cluster service implementation's controller.
               type: object
               properties:
+                clusters:
+                  description: |-
+                    clusters is the list of destination clusters to which the exporting
+                    implementation makes this service's information available for discovery
+                    and import. A cluster is listed even if the service's namespace does not
+                    exist there or the cluster ignores or rejects the export. An entry does
+                    not indicate that the destination has accepted or imported the service.
+                    The exporting implementation reports this list without needing to inspect
+                    remote namespaces or import state. Reporting destinations is optional;
+                    an absent or empty list does not imply that the service has no destinations.
+                  type: array
+                  items:
+                    description: |-
+                      ClusterStatus identifies a cluster associated with a service export or import.
+                      ServiceExport lists destination clusters; ServiceImport lists source clusters.
+                    type: object
+                    required:
+                      - cluster
+                    properties:
+                      cluster:
+                        description: |-
+                          cluster is the name of the cluster. Must be a valid RFC-1123 DNS
+                          label.
+                        type: string
+                  x-kubernetes-list-map-keys:
+                    - cluster
+                  x-kubernetes-list-type: map
                 conditions:
                   type: array
                   items:
@@ -202,6 +229,33 @@ spec:
                 Populated by the multi-cluster service implementation's controller.
               type: object
               properties:
+                clusters:
+                  description: |-
+                    clusters is the list of destination clusters to which the exporting
+                    implementation makes this service's information available for discovery
+                    and import. A cluster is listed even if the service's namespace does not
+                    exist there or the cluster ignores or rejects the export. An entry does
+                    not indicate that the destination has accepted or imported the service.
+                    The exporting implementation reports this list without needing to inspect
+                    remote namespaces or import state. Reporting destinations is optional;
+                    an absent or empty list does not imply that the service has no destinations.
+                  type: array
+                  items:
+                    description: |-
+                      ClusterStatus identifies a cluster associated with a service export or import.
+                      ServiceExport lists destination clusters; ServiceImport lists source clusters.
+                    type: object
+                    required:
+                      - cluster
+                    properties:
+                      cluster:
+                        description: |-
+                          cluster is the name of the cluster. Must be a valid RFC-1123 DNS
+                          label.
+                        type: string
+                  x-kubernetes-list-map-keys:
+                    - cluster
+                  x-kubernetes-list-type: map
                 conditions:
                   type: array
                   items:
