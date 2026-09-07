@@ -65,6 +65,20 @@ type ServiceExportSpec struct {
 
 // ServiceExportStatus contains the current status of an export.
 type ServiceExportStatus struct {
+	// clusters is the list of destination clusters to which the exporting
+	// implementation makes this service's information available for discovery
+	// and import. A cluster is listed even if the service's namespace does not
+	// exist there or the cluster ignores or rejects the export. An entry does
+	// not indicate that the destination has accepted or imported the service.
+	// The exporting implementation reports this list without needing to inspect
+	// remote namespaces or import state. Reporting destinations is optional;
+	// an absent or empty list does not imply that the service has no destinations.
+	// +optional
+	// +patchStrategy=merge
+	// +patchMergeKey=cluster
+	// +listType=map
+	// +listMapKey=cluster
+	Clusters []ClusterStatus `json:"clusters,omitempty"`
 	// +optional
 	// +patchStrategy=merge
 	// +patchMergeKey=type

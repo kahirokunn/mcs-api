@@ -168,9 +168,10 @@ type ServiceImportStatus struct {
 	Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type"`
 }
 
-// ClusterStatus contains service configuration mapped to a specific source cluster
+// ClusterStatus identifies a cluster associated with a service export or import.
+// ServiceExport lists destination clusters; ServiceImport lists source clusters.
 type ClusterStatus struct {
-	// cluster is the name of the exporting cluster. Must be a valid RFC-1123 DNS
+	// cluster is the name of the cluster. Must be a valid RFC-1123 DNS
 	// label.
 	Cluster string `json:"cluster"`
 }
